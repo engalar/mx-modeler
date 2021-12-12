@@ -47,6 +47,9 @@ const argv = optimist
   .string('v')
     .alias('v', 'version')
     .describe('v', 'Use a specific version to open the project. Usage: \'-v 6.0.0 <project.mpr>\'')
+  .string('n')
+    .alias('n', 'new')
+    .describe('n', 'Use a specific version to create the project. Usage: \'-n 8.18.8 -- create-project --app-name testProject --output-dir C:\\Users\\eg\\Desktop\\tmp\'')
   .boolean('h')
     .alias('h', 'help')
     .describe('h', 'Shows this help screen')
@@ -118,6 +121,40 @@ if (versionSelector.err !== null) {
       ''
     ].join('\n');
     console.log(msg);
+  }
+} else if (argv.new) {
+  let featureFlags = [];
+
+  if (argv.flags) {
+    featureFlags = argv.flags.split(',').map(f => f && f.length ? '--' + f : null).filter(f => f !== null);
+  }
+
+  // RUN THE FILE WITH A SPECIFIC VERSION
+  if (modelerPaths.err !== null) {
+    console.log(chalk.red(' Error: ') + modelerPaths.err + '\n');
+    process.exit(1);
+  }
+
+  if (!modelerPaths.output) {
+    console.log(chalk.red(' Error: ') + 'I have no output of modelers, unexpected');
+    process.exit(1);
+  }
+
+  const version = argv.new.split('.').length < 3 ? argv.new + '.' : argv.new;
+  const filteredKeys = Object.keys(modelerPaths.output.modelers).filter(k => k.indexOf(version) !== -1);
+  const filteredKey = filteredKeys.length === 1 ? filteredKeys[0] : null;
+
+  if (filteredKeys.length > 1) {
+    console.log(chalk.red(' Error: ') + 'I have multiple candidates, please specify: ' + filteredKeys.join(', ') + '\n');
+  } else if (filteredKey !== null && modelerPaths.output.versions && modelerPaths.output.modelers[filteredKey]) {
+    const modelerPath = modelerPaths.output.modelers[filteredKey];
+
+
+    console.log(' Running Modeler version ' + chalk.cyan(filteredKey) + '\n');
+    mendixRunner.run(modelerPath.replace('studiopro.exe','mx.exe'), null, files);
+
+  } else {
+    console.log(chalk.red(' Error: ') + 'Cannot find specified version: ' + argv.version + '\n');
   }
 } else if (argv.help || files.length > 1) {
   // We do not have a file (or the arguments length !== 1, meaning multiple files)

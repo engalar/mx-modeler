@@ -1,13 +1,16 @@
 {
   "name": "mx-modeler",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "Start your Mendix modeler from command-line",
   "main": "cli.js",
   "bin": {
     "mx-modeler": "./bin/mx-modeler"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "x": "npm i --registry=https://registry.npmmirror.com",
+    "list": "node cli.js -l",
+    "n": "node cli.js -n 8.18.8 -- create-project --app-name testProject --output-dir C:\\Users\\eg\\Desktop\\tmp",
+    "openWithSpecifyVersion": "node cli.js -v 8.18.8 C:\\Users\\eg\\Desktop\\tmp\\testProject.mpr"
   },
   "keywords": [
     "mendix",
@@ -31,11 +34,11 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^2.3.2",
-    "lodash": "^4.0.1",
+    "lodash": "^4.17.21",
     "node-mendix-modeler-path": "https://github.com/JelteMX/node-mendix-modeler-path/archive/v1.1.0.tar.gz",
     "optimist": "^0.6.1",
-    "pad": "^2.0.3",
-    "sqlite3": "^4.0.3",
-    "update-notifier": "^2.3.0"
+    "pad": "^3.2.0",
+    "sqlite3": "^5.0.2",
+    "update-notifier": "^5.1.0"
   }
 }
